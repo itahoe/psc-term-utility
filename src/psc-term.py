@@ -59,10 +59,11 @@ class DynamicUpdate():
 
             master.set_timeout( 2.0 )
             master.set_verbose( False )
-            m = master.execute( 13, cst.READ_INPUT_REGISTERS, 1, 4 )
+            #m = master.execute( 13, cst.READ_INPUT_REGISTERS, 1, 4 )
+            m = master.execute( 13, cst.READ_HOLDING_REGISTERS, 1, 32 )
             #print( m[0] )
             xdata.append(x)
-            ydata.append( m[0] )
+            ydata.append( m[16] )
 
             self.on_running(xdata, ydata)
             time.sleep(1)
