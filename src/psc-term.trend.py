@@ -58,7 +58,7 @@ class Display():
     def on_launch(self):
         #Set up plot
         self.figure, self.ax = plt.subplots( facecolor=('xkcd:gray') )
-        self.figure.canvas.set_window_title('PMI Systems')
+        self.figure.canvas.set_window_title('PSC-TERM-TREND')
         #plt.title( 'O2 CONCENTRATION' )
         plt.ylabel('PPM')
         self.lines, = self.ax.plot([],[], color=('xkcd:light green'), linestyle='-')

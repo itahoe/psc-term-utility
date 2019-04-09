@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-SER_PORT    = "COM4"
+#SER_PORT    = "COM4"
+SER_PORT    = "COM7"
 SER_BAUD    = 9600
 
 
@@ -59,6 +60,7 @@ class Display():
     def on_launch(self):
         #Set up plot
         self.figure = plt.figure( figsize=(6,4), facecolor=('xkcd:dark gray') )
+        self.figure.canvas.set_window_title( 'PSC-TERM-CONFIG' )
         self.ax     = self.figure.add_subplot(8,1,7)
 
         #self.figure, self.ax = plt.subplots( facecolor=('xkcd:gray'), figsize=( 10, 5) )
