@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plt
 
+SER_PORT    = "COM4"
+SER_BAUD    = 19200
+MDBS_ADDR   = 128
+
 plt.ion()
 
 class DynamicUpdate():
@@ -14,7 +18,7 @@ class DynamicUpdate():
         #Set up plot
         self.figure, self.ax = plt.subplots( facecolor=('xkcd:gray') )
         self.figure.canvas.set_window_title('PMI Systems')
-        plt.title('O2 CONCENTRATION')
+        plt.title('CONCENTRATION')
         plt.ylabel('PPM')
         self.lines, = self.ax.plot([],[], color=('xkcd:light yellow'), linestyle='-')
 
@@ -52,22 +56,34 @@ class DynamicUpdate():
         self.on_launch()
         xdata = []
         ydata = []
-        master = modbus_rtu.RtuMaster(serial.Serial(port="COM4", baudrate=9600, bytesize=8, parity='N', stopbits=1, xonxoff=0))
+        master = modbus_rtu.RtuMaster(serial.Serial(port=SER_PORT, baudrate=SER_BAUD, bytesize=8, parity='N', stopbits=1, xonxoff=0))
 
-        #for x in np.arange(0,100,1):
-        for x in np.arange(0,1000,1):
 
-            master.set_timeout( 2.0 )
-            master.set_verbose( False )
-            #m = master.execute( 13, cst.READ_INPUT_REGISTERS, 1, 4 )
-            m = master.execute( 13, cst.READ_HOLDING_REGISTERS, 1, 32 )
-            #print( m[0] )
-            xdata.append(x)
-            ydata.append( m[16] )
+        var = True
 
-            self.on_running(xdata, ydata)
-            time.sleep(1)
+        while var == True :
+            for x in np.arange(0,2,1):
+            #for x in np.arange(0,1000,1):
+
+                master.set_timeout( 2.0 )
+                master.set_verbose( False )
+                m = master.execute( MDBS_ADDR, cst.READ_HOLDING_REGISTERS, 0, 32 )
+                xdata.append(x)
+                #ydata.append( m[17] )
+                concentration   = m[17] << 16
+                concentration   |= m[16]
+                print( m[17], m[16], concentration )
+                ydata.append( concentration )
+
+                self.on_running(xdata, ydata)
+                time.sleep(1)
+
         return xdata, ydata
 
 d = DynamicUpdate()
-d()
+#d()
+
+try:
+    d()
+except modbus_tk.modbus.ModbusError as exc:
+    logger.error("%s- Code=%d", exc, exc.get_exception_code())
